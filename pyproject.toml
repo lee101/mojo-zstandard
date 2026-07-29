@@ -1,0 +1,22 @@
+[project]
+name = "mojo-zstandard"
+version = "0.1.0"
+description = "Zstandard bindings and framing for Python through Mojo"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Lee Penkman", email = "leepenkman@gmail.com" }]
+keywords = ["mojo", "zstandard", "zstd", "compression"]
+
+[project.optional-dependencies]
+dev = ["pytest", "zstandard", "numpy"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "python" }
+
+[tool.setuptools.packages.find]
+where = ["python"]
