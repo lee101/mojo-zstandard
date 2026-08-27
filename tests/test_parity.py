@@ -25,6 +25,16 @@ def test_roundtrip_sizes(size):
     assert zstd.decompress(zstd.compress(source)) == source
 
 
+def test_reused_context_roundtrips_varying_sizes():
+    compressor = zstd.ZstdCompressor(level=9, write_checksum=True)
+    decompressor = zstd.ZstdDecompressor()
+    for size in (250_003, 0, 17, 4097, 31, 180_001):
+        source = payload(size)
+        encoded = compressor.compress(source)
+        assert decompressor.decompress(encoded) == source
+        assert zstd.get_frame_parameters(encoded).has_checksum
+
+
 @pytest.mark.parametrize("level", [-3, 1, 3, 9, 19])
 def test_mojo_compresses_upstream_decompresses(level):
     source = payload()

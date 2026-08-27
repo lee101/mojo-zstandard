@@ -308,14 +308,14 @@ class ZstdCompressor:
         status = ctypes.c_int64()
         with self._lock:
             try:
-                self._context.reset(source_size)
                 destination = lib().mzs_compress_pybytes(
                     self._context.address,
                     source_address,
                     source_size,
                     ctypes.addressof(status),
                 )
-                check(status.value, "compression")
+                if status.value < 0:
+                    check(status.value, "compression")
             except LibraryError as exc:
                 raise ZstdError(str(exc)) from exc
         _ = source_keepalive

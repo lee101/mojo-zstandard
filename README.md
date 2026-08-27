@@ -77,11 +77,11 @@ time, so values above one mean mojo-zstandard was faster.
 
 | case | mojo-zstandard | upstream zstandard | relative |
 | --- | ---: | ---: | ---: |
-| compress repetitive 8 MiB, level 3 | 2.23 ms | 2.17 ms | 0.98x |
-| decompress repetitive 8 MiB | 0.69 ms | 0.68 ms | 0.99x |
-| compress random 8 MiB, level 3 | 6.01 ms | 5.98 ms | 1.00x |
-| decompress random 8 MiB | 2.00 ms | 0.99 ms | 0.50x |
-| compress repetitive 8 MiB, level 9 | 10.47 ms | 8.76 ms | 0.84x |
+| compress repetitive 8 MiB, level 3 | 1.53 ms | 1.58 ms | 1.03x |
+| decompress repetitive 8 MiB | 0.48 ms | 0.43 ms | 0.90x |
+| compress random 8 MiB, level 3 | 3.42 ms | 3.62 ms | 1.06x |
+| decompress random 8 MiB | 0.81 ms | 0.67 ms | 0.83x |
+| compress repetitive 8 MiB, level 9 | 7.79 ms | 7.87 ms | 1.01x |
 
 Both packages execute the same zstd release, so these results primarily measure
 allocation and language-boundary costs. Results vary with CPU load; run the
@@ -90,7 +90,8 @@ benchmark locally instead of treating this single run as a general speed claim.
 Profiling found no port-owned bulk arithmetic loop to vectorize or parallelize:
 the entropy codec loops execute inside libzstd, while the binding performs
 pointer setup, frame metadata checks, and output-buffer handling. The port
-intentionally remains CPU-only and does not add a GPU runtime dependency.
+has no high-arithmetic-intensity kernel that could justify device transfers, so
+it intentionally remains CPU-only and does not add a GPU runtime dependency.
 
 ## How it works
 
